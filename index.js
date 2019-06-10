@@ -2369,13 +2369,13 @@ function noop() {}
 class Modelo {
   inicializar() {
     throw new Error(
-      'Abstract method must be implemented in the derived class.'
+      'Se implementara en la clase derivada'
     );
   }
 
   predecir_var(input_var) {
     throw new Error(
-      'Abstract method must be implemented in the derived class.'
+      'Se implementara en la clase derivada'
     );
   }
 
@@ -2385,16 +2385,9 @@ class Modelo {
 
   entrenar(input_setx, input_sety) {
     throw new Error(
-      'Abstract method must be implemented in the derived class.'
+      'Se implementara en la clase derivada'
     );
   }
-
-  /*fit(input_setx, input_sety, iterationCount = 10) {
-    for (let i = 0; i < iterationCount; i += 1) {
-      this.entrenar(input_setx, input_sety);
-      console.info('fit2')
-    }
-  }*/
 
 }
 /////////////////////////////////////////////////////////////////////////////
@@ -2409,7 +2402,7 @@ class ModeloGenetico extends Modelo {
     this.mutar(clones);
   }
 
-  fit(cromosomas, iterationCount = 100) {
+  fit(cromosomas) {
       this.entrenar(cromosomas);
   }
 
