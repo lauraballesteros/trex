@@ -2396,21 +2396,24 @@ class Modelo {
 /////////////////////////////////////////////////////////////////////////////////
 
 class ModeloGenetico extends Modelo {
+  //para entrenar se debe hacer el llamado de las funciones seleccionar,cruce y mutar
   entrenar(cromosomas) {
     const padres = this.seleccionar(cromosomas);
     const clones = this.cruce(padres, cromosomas);
     this.mutar(clones);
   }
-
+//se entrena el modelo a traves de la funcion fit
   fit(cromosomas) {
-      this.entrenar(cromosomas);
+    console.log(cromosomas);
+    this.entrenar(cromosomas);
   }
-
+//Toma los cromosomas con mejor desempeño es decir los 2 primeros en la matriz de cromosomas
   seleccionar(cromosomas) {
     const padres = [cromosomas[0], cromosomas[1]];
     return padres;
   }
 
+  //mediante un punto de cruce aleatorio se intercambian las caracteristicas de los cromosomas padres para asi reemplazar los peores cromosomas con los nuevos
   cruce(padres, cromosomas) {
     // Clones de los padres
     const clon1 = padres[0];
@@ -2420,22 +2423,23 @@ class ModeloGenetico extends Modelo {
     // Seleccionar un punto de cruce aleatorio
     const punto_Cruce = Math.floor(Math.random() * clon1.length);
     console.info("cruce: ",punto_Cruce);
-    // Inteercambiar valores de los padres
+    // Intercambiar valores de los padres en el punto de cruce
     for (let i = 0; i < punto_Cruce; i += 1) {
         const temp = clon1[i];
         clon1[i] = clon2[i];
         clon2[i] = temp;
     }
-    // crear arreglo de clones para almacenar a clon 1 y 2 despues del cruce
+    // Crear arreglo de clones para almacenar a clon 1 y 2 despues del cruce
     const clones = [clon1, clon2];
-    // reemplazar los 2 cromosomas con el peor rendimiento(los ultimos 2 en el arreglo cromosomas) con clones
+    // Reemplazar los 2 cromosomas con el peor rendimiento (los ultimos 2 en el arreglo cromosomas) con clones
     for (let i = 0; i < 2; i += 1) {
       cromosomas[cromosomas.length - i - 1] = clones[i];
     }
-    console.info("hijo: ",clones)
+    console.info("clones: ",clones)
     return clones;
   }
-
+//Mediante la eleccion de un punto de mutacion aleatorio se asigna un valor aleatorio a una posicion del cromosoma (la cual es la escogida con el punto de mutacion mencionado antes)
+//La mutación se hace con el fin de cambiar ligeramente la poblacion para cada generacion con el fin de obtener un mejor resultado
   mutar(cromosomas) {
     cromosomas.forEach(cromosomas => {
       const punto_Mutacion = Math.floor(Math.random() * cromosomas.length);
@@ -2445,31 +2449,10 @@ class ModeloGenetico extends Modelo {
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////
 
+//La clase modelo aleatorio es la primera en utilizarce puesto que como su nombre lo indica genera el modelo genetico aleatorio 
+//Esta clase hereda a la clase modelo 
 class ModeloAleatorio extends Modelo {
   pesos = [];
   sesgo = [];
@@ -2477,7 +2460,8 @@ class ModeloAleatorio extends Modelo {
   inicializar() {
     this.randomize();
   }
-
+//Desicion de saltar
+//desicion= peso1*var1 + peso2*var2 + peso3*var3 + sesgo
   predecir_var(input_set) {
     const input_var = input_set[0];
     const decision =
@@ -2485,64 +2469,43 @@ class ModeloAleatorio extends Modelo {
       this.pesos[1] * input_var[1]+
       this.pesos[2] * input_var[2] +
       this.sesgo[0];
+      //el if terciario devulve 1 o 0 segun el caso dado
     return decision < 0 ? 1 : 0;
   }
 
   entrenar() {
     this.randomize();
   }
-
+//Los pesos usados para la desicion y el cromosoma se escogen aleatoiamente mediante la funcion random
   randomize() {
     this.pesos[0] = random();
     this.pesos[1] = random();
     this.pesos[2] = random();
     this.sesgo[0] = random();
   }
-  getCromosoma() {
-    return this.pesos.concat(this.sesgo);
-  }
-
+  
+//Se llena cromosoma con los 3 pesos
   setCromosoma(cromosoma) {
     this.pesos[0] = cromosoma[0];
     this.pesos[1] = cromosoma[1];
     this.pesos[2] = cromosoma[2];
     this.sesgo[0] = cromosoma[3];
   }
+  //Se concatena el sesgo a los pesos
+  getCromosoma() {
+    return this.pesos.concat(this.sesgo);
+  }
 }
 
+//Random genera un numero aleatorio entre -1 y 1
 function random() {
   return (Math.random() - 0.5) * 2;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////
 
-// const DINO_COUNT = 10;
 
 let runner = null;
 
@@ -2554,15 +2517,16 @@ let firstTime = true;
 function setup() {
   // Initialize the game Runner.
   runner = new Runner('.game', {
+    //poblacion de dinosaurios durante el juego
     DINO_COUNT:10,
     onReset: handleReset,
     onCrash: handleCrash,
     onRunning: handleRunning
   });
-  // Set runner as a global variable if you need runtime debugging.
+ 
   window.runner = runner;
-  // console.info(runner)
-  // Initialize everything in the game and start the game.
+
+  //Inicializar todo en el juego
   runner.init();
 }
 
@@ -2580,15 +2544,15 @@ function handleReset(Dinos) {
 
   }
   else {
-    // Train the model before restarting.
+    // Emtrenar el modelo antes de volver a iniciar.
     console.info('Entrenando');
-    const chromosomes = rankList.map((dino) => dino.model.getCromosoma());
+    const cromosomas = rankList.map((dino) => dino.model.getCromosoma());
     // console.info(chromosomes)
     // Clear rankList
     rankList.splice(0);
-    geneticModel.fit(chromosomes);
+    geneticModel.fit(cromosomas);
     Dinos.forEach((dino, i) => {
-      dino.model.setCromosoma(chromosomes[i]);
+      dino.model.setCromosoma(cromosomas[i]);
     });
   }
 }
@@ -2600,7 +2564,7 @@ function handleRunning(dino, state) {
   }
   return action;
 }
-
+//Ranklist es una lista en la cual se va agregando a cada dinosaurio una vez pierde 
 function handleCrash(dino) {
   // console.info("i was called")
   if (!rankList.includes(dino)) {
