@@ -2344,27 +2344,6 @@ function createCanvas(container, width, height, className) {
 function noop() {}
 
 /////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////
 class Modelo {
   inicializar() {
@@ -2391,8 +2370,6 @@ class Modelo {
 
 }
 /////////////////////////////////////////////////////////////////////////////
-
-
 /////////////////////////////////////////////////////////////////////////////////
 
 class ModeloGenetico extends Modelo {
@@ -2460,8 +2437,8 @@ class ModeloAleatorio extends Modelo {
   inicializar() {
     this.randomize();
   }
-//Desicion de saltar
-//desicion= peso1*var1 + peso2*var2 + peso3*var3 + sesgo
+//Decision de saltar
+//decision= peso1*var1 + peso2*var2 + peso3*var3 + sesgo
   predecir_var(input_set) {
     const input_var = input_set[0];
     const decision =
@@ -2515,7 +2492,7 @@ const geneticModel = new ModeloGenetico();
 let firstTime = true;
 
 function setup() {
-  // Initialize the game Runner.
+  // Inicalizar el runner.
   runner = new Runner('.game', {
     //poblacion de dinosaurios durante el juego
     DINO_COUNT:10,
@@ -2548,9 +2525,9 @@ function handleReset(Dinos) {
     console.info('Entrenando');
     const cromosomas = rankList.map((dino) => dino.model.getCromosoma());
     // console.info(chromosomes)
-    // Clear rankList
+    // vaciar rankList para la siguiente generacion
     rankList.splice(0);
-    geneticModel.fit(cromosomas);
+    geneticModel.fit(cromosomas); //entrenar al modelo
     Dinos.forEach((dino, i) => {
       dino.model.setCromosoma(cromosomas[i]);
     });
